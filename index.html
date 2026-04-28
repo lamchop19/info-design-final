@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Tour in 10</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & BASE ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #FFFFFF;
+      color: #111111;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── ERA COLOR VARS ────────────────────────────── */
+    .era-1 { --era-primary: #7A5C1E; --era-accent: #F2E4C4; --era-tint: #F9F1E3; --era-label: "Era I · The Pioneer Era"; }
+    .era-2 { --era-primary: #4A5228; --era-accent: #EDE9D4; --era-tint: #F2F0E4; --era-label: "Era II · The Golden Age"; }
+    .era-3 { --era-primary: #003399; --era-accent: #FFCC00; --era-tint: #EDF0FF; --era-label: "Era III · The Colossus Era"; }
+    .era-4 { --era-primary: #1A8A96; --era-accent: #E5F4F6; --era-tint: #EAF7F9; --era-label: "Era IV · The Precision Era"; }
+    .era-5 { --era-primary: #CC1515; --era-accent: #2D2D2D; --era-tint: #FDECEC; --era-label: "Era V · The Modern Era"; }
+
+    /* ── NAV ───────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #EBEBEB;
+      height: 56px;
+      padding: 0 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #111;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 0.1rem; align-items: center; }
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: #AAAAAA;
+      text-decoration: none;
+      padding: 0.35rem 0.55rem;
+      border-radius: 3px;
+      transition: color 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .nav-links a:hover { color: #111; background: #F5F5F5; }
+    .nav-links a.active { color: #111; font-weight: 700; }
+
+    /* ── HERO ──────────────────────────────────────── */
+    #hero {
+      padding: 130px 3rem 100px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #BBBBBB;
+      margin-bottom: 1.5rem;
+    }
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 9vw, 8.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+      color: #111;
+      margin: 0 0 2rem;
+    }
+    #hero .subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+      font-weight: 400;
+      color: #888;
+      margin: 0 auto 5rem;
+      max-width: 460px;
+      line-height: 1.65;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.65rem;
+      max-width: 680px;
+      margin: 0 auto 1.25rem;
+    }
+    .hero-thumb { aspect-ratio: 1; background: #E6E6E6; }
+    .hero-caption {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      color: #C0C0C0;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── WINNER SECTION SHELL ──────────────────────── */
+    .winner-section { border-top: 1px solid #E8E8E8; }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 3rem 8rem;
+    }
+
+    /* Era header row */
+    .era-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.75rem;
+    }
+    .era-tag {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--era-primary);
+      color: #FFFFFF;
+      padding: 0.32rem 0.7rem;
+      border-radius: 2px;
+    }
+    .era-years {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.77rem;
+      color: #AAAAAA;
+    }
+
+    /* Winner name block */
+    .winner-no {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--era-primary);
+      margin-bottom: 0.4rem;
+    }
+    h2.winner-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.75rem, 5.5vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      color: #111;
+      margin: 0 0 0 0;
+      padding-bottom: 2rem;
+      position: relative;
+    }
+    h2.winner-name::after {
+      content: '';
+      display: block;
+      width: 4.5rem;
+      height: 5px;
+      background: var(--era-primary);
+      margin-top: 1.25rem;
+    }
+    .winner-year {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 300;
+      color: #AAAAAA;
+      letter-spacing: -0.01em;
+    }
+
+    /* Intro: portrait + bio */
+    .winner-intro {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 5rem;
+      align-items: start;
+      margin-bottom: 5rem;
+    }
+    .portrait-placeholder {
+      aspect-ratio: 3 / 4;
+      background: var(--era-tint);
+      border: 1px solid color-mix(in srgb, var(--era-primary) 18%, white);
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 0.9rem;
+    }
+    .portrait-placeholder span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem;
+      color: color-mix(in srgb, var(--era-primary) 50%, #BBBBBB);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .winner-bio {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: #444;
+      padding-top: 0.25rem;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #E8E8E8;
+      margin-bottom: 4rem;
+    }
+    .stat {
+      padding: 2rem 1.75rem;
+      border-right: 1px solid #E8E8E8;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 2.8vw, 3rem);
+      font-weight: 700;
+      color: var(--era-primary);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+    }
+
+    /* Chart placeholder */
+    .chart-placeholder {
+      background: var(--era-tint);
+      border: 1px solid color-mix(in srgb, var(--era-primary) 16%, white);
+      min-height: 360px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Image strip */
+    .image-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .img-placeholder {
+      aspect-ratio: 4 / 3;
+      background: #EFEFEF;
+      display: flex;
+      align-items: flex-end;
+      padding: 0.75rem;
+    }
+    .img-placeholder span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem;
+      color: #C0C0C0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Qualitative placeholder */
+    .qualitative-placeholder {
+      min-height: 260px;
+      border: 2px dashed color-mix(in srgb, var(--era-primary) 28%, white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Shared placeholder text */
+    .ph-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: color-mix(in srgb, var(--era-primary) 55%, #CCCCCC);
+      letter-spacing: 0.03em;
+    }
+    .ph-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      color: #C8C8C8;
+    }
+
+    /* ── FOOTER ────────────────────────────────────── */
+    footer {
+      border-top: 1px solid #E8E8E8;
+      padding: 2.5rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      color: #C0C0C0;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 900px) {
+      .winner-intro { grid-template-columns: 1fr; gap: 2rem; }
+      .portrait-placeholder { aspect-ratio: 4 / 3; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links a { padding: 0.3rem 0.4rem; font-size: 0.68rem; }
+      #hero { padding: 100px 1.5rem 60px; }
+      .section-inner { padding: 4rem 1.5rem 5rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: none; }
+      .stat:nth-child(3) { border-top: 1px solid #E8E8E8; border-right: 1px solid #E8E8E8; }
+      .stat:nth-child(4) { border-top: 1px solid #E8E8E8; }
+      .image-strip { gap: 0.5rem; }
+      .hero-grid { gap: 0.5rem; }
+      footer { flex-direction: column; gap: 0.4rem; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .nav-links a { padding: 0.3rem 0.3rem; font-size: 0.62rem; }
+      h2.winner-name { font-size: 2.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────── -->
+  <nav>
+    <a href="#hero" class="nav-title">Le Tour in 10</a>
+    <div class="nav-links">
+      <a href="#winner-1">1</a>
+      <a href="#winner-2">2</a>
+      <a href="#winner-3">3</a>
+      <a href="#winner-4">4</a>
+      <a href="#winner-5">5</a>
+      <a href="#winner-6">6</a>
+      <a href="#winner-7">7</a>
+      <a href="#winner-8">8</a>
+      <a href="#winner-9">9</a>
+      <a href="#winner-10">10</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────── -->
+  <section id="hero">
+    <p class="hero-eyebrow">Tour de France · 1903 – Present</p>
+    <h1>Le Tour<br>in 10</h1>
+    <p class="subtitle">The story of the world's greatest bicycle race, told through ten decisive champions.</p>
+    <div class="hero-grid">
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+      <div class="hero-thumb"></div>
+    </div>
+    <p class="hero-caption">Portraits of each champion — 1903 to present</p>
+  </section>
+
+  <!-- ── WINNER 1: MAURICE GARIN ──────────────────── -->
+  <section id="winner-1" class="winner-section era-1">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era I · The Pioneer Era</span>
+        <span class="era-years">1903 – 1939</span>
+      </div>
+      <div class="winner-no">No. 01</div>
+      <h2 class="winner-name">Maurice Garin <span class="winner-year">· 1903</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Garin</span></div>
+        <p class="winner-bio">A chimney sweep turned racing legend, Maurice Garin won the inaugural Tour de France with a commanding lead across all six stages. Born in Italy and naturalised French, he completed the 2,428-kilometre course through gravel roads and summer dust at an average speed that stunned a nation still becoming accustomed to the bicycle. His victory cemented the race as an institution.<br><br>Garin's form was so dominant in that first edition that he finished nearly three hours ahead of the next man — a margin that has never been matched again. The Tour was conceived as a publicity stunt for a newspaper; Garin turned it into legend. He was disqualified from the 1904 edition for taking a train, and retired from professional racing not long after. The race, however, was just beginning.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">2,428</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">6</span>
+          <span class="stat-label">Stages</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">60</span>
+          <span class="stat-label">Starters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">2h 49m</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Stage-by-Stage Time &amp; Cumulative Lead</span>
+        <span class="ph-sub">6 stages · bar / line hybrid</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — Original 1903 Route Map</span>
+        <span class="ph-sub">Hand-drawn cartographic illustration · Paris–Lyon–Marseille–Toulouse–Bordeaux–Nantes–Paris</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 2: OCTAVE LAPIZE ──────────────────── -->
+  <section id="winner-2" class="winner-section era-1">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era I · The Pioneer Era</span>
+        <span class="era-years">1903 – 1939</span>
+      </div>
+      <div class="winner-no">No. 02</div>
+      <h2 class="winner-name">Octave Lapize <span class="winner-year">· 1910</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Lapize</span></div>
+        <p class="winner-bio">Nicknamed <em>Le Frisé</em> — The Curly One — Octave Lapize won the 1910 Tour in the year the race first crossed the high Pyrenees. Ascending the Col du Tourmalet on a single-speed bicycle with a fixed gear, he famously screamed at race officials standing at the summit: <em>"Vous êtes des assassins!"</em> The organisers, undeterred, returned the following year with even steeper climbs.<br><br>A Parisian by birth and an amateur boxer in his off-season, Lapize combined raw power with tactical aggression to conquer a field of 110 starters. His victory represented a turning point: the Tour was no longer merely a road race — it had become a test of elemental endurance in the mountains. He died in 1917, shot down as a fighter pilot over Verdun at 29.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">4,737</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">15</span>
+          <span class="stat-label">Stages</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">110</span>
+          <span class="stat-label">Starters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">4m 14s</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Pyrenean Stage Elevation Profiles</span>
+        <span class="ph-sub">Col du Tourmalet, Aubisque, Peyresourde · area chart</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The First Mountain Passes</span>
+        <span class="ph-sub">Illustrated cross-section of the Col du Tourmalet ascent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 3: FAUSTO COPPI ───────────────────── -->
+  <section id="winner-3" class="winner-section era-2">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era II · The Golden Age</span>
+        <span class="era-years">1940 – 1965</span>
+      </div>
+      <div class="winner-no">No. 03</div>
+      <h2 class="winner-name">Fausto Coppi <span class="winner-year">· 1949</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Coppi</span></div>
+        <p class="winner-bio"><em>Il Campionissimo.</em> Fausto Coppi was the greatest Italian cyclist who ever lived — a man so gifted that rivals competed not for victory but for second. In 1949 he completed the unprecedented Giro–Tour double, winning both Grand Tours in the same calendar year with a style so fluid that journalists struggled for words.<br><br>His war with Gino Bartali — secular versus sacred, industrial North versus rural South — divided all of Italy. Coppi's angular build and radical dropped posture on the bicycle prefigured aerodynamics research by forty years. He died in 1960 from misdiagnosed malaria contracted in Africa. He was forty years old. The sport has not seen anyone quite like him before or since.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">4,808</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">21</span>
+          <span class="stat-label">Stages</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">28m 27s</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">2</span>
+          <span class="stat-label">Giro–Tour Doubles</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — 1949 Giro–Tour Double: Race Comparison</span>
+        <span class="ph-sub">Dual timeline · stage-by-stage lead · annotated line chart</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — Coppi vs. Bartali: The Italian Rivalry</span>
+        <span class="ph-sub">Head-to-head career comparison · dual timeline</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 4: JACQUES ANQUETIL ──────────────── -->
+  <section id="winner-4" class="winner-section era-2">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era II · The Golden Age</span>
+        <span class="era-years">1940 – 1965</span>
+      </div>
+      <div class="winner-no">No. 04</div>
+      <h2 class="winner-name">Jacques Anquetil <span class="winner-year">· 1961</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Anquetil</span></div>
+        <p class="winner-bio">The first man to win five Tours, Jacques Anquetil from Normandy was cycling's first genuine superstar — handsome, aloof, and possessed of the most precise time-trial position the sport had seen. He won the 1961 Tour from start to finish, holding the yellow jersey every single day of the race, a feat matched by almost no one before or since.<br><br>Anquetil raced on his own terms. He was known to eat lobster and drink champagne the night before critical time trials, and he openly admitted to doping in an era when it was considered a professional tool. His five victories between 1957 and 1964 made him the standard against which all who followed were measured — at least until a Belgian from Brussels arrived and made the benchmark unreachable.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">4,397</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">21</span>
+          <span class="stat-label">Stages</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">12m 14s</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Career Tour Wins</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Time Trial Dominance Across Five Tours</span>
+        <span class="ph-sub">Gap gained per TT stage · 1957–1964 · grouped bar</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The Normandy Time Trialist</span>
+        <span class="ph-sub">Anquetil's position and technique · annotated illustration</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 5: EDDY MERCKX ────────────────────── -->
+  <section id="winner-5" class="winner-section era-3">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era III · The Colossus Era</span>
+        <span class="era-years">1966 – 1985</span>
+      </div>
+      <div class="winner-no">No. 05</div>
+      <h2 class="winner-name">Eddy Merckx <span class="winner-year">· 1969</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Merckx</span></div>
+        <p class="winner-bio"><em>The Cannibal.</em> No rider in the history of the Tour — or professional cycling — has come close to what Eddy Merckx achieved in 1969. He won six stages, the mountains classification, the points classification, and the overall title with a margin of nearly eighteen minutes. He was 24 years old, and it was his Tour debut.<br><br>The Belgian from Brussels won five Tours in total, attacking not when tactically necessary but always — consuming every race with an appetite that left rivals and commentators equally speechless. His record of 34 Tour stage victories stood for over fifty years. Racing against Merckx, wrote one journalist, felt like competing against a force of nature that simply hadn't been told the rules applied to it.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">4,117</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">6</span>
+          <span class="stat-label">Stage Wins in 1969</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">17m 54s</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">525</span>
+          <span class="stat-label">Career Victories</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Career Victories by Race Type</span>
+        <span class="ph-sub">525 wins across all categories · treemap</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The Palmarès of The Cannibal</span>
+        <span class="ph-sub">All victories plotted by year and race · dot matrix</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 6: BERNARD HINAULT ───────────────── -->
+  <section id="winner-6" class="winner-section era-3">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era III · The Colossus Era</span>
+        <span class="era-years">1966 – 1985</span>
+      </div>
+      <div class="winner-no">No. 06</div>
+      <h2 class="winner-name">Bernard Hinault <span class="winner-year">· 1978</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Hinault</span></div>
+        <p class="winner-bio"><em>Le Blaireau</em> — The Badger. Bernard Hinault from Brittany won five Tours over eight years with a combative, attacking style that earned him a fierce popular following across France. His first victory in 1978 came after he organised a rider strike at Valence-d'Agen over race start times — an act of militant solidarity that told you everything about the man.<br><br>He remains the last Frenchman to win his home race, and has reportedly vowed not to attend the final podium until one of his countrymen does. Hinault fought with teammates, rivals, and journalists with equal ferocity. His battles with Greg LeMond in 1986 — ostensibly the year he was helping the American win — became one of the sport's most contested chapters. He disputes it still.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">3,908</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Stage Wins in 1978</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">3m 56s</span>
+          <span class="stat-label">Winning Margin</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Career Tour Wins</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Five Victories: Year-by-Year Winning Margin</span>
+        <span class="ph-sub">1978 · 1979 · 1981 · 1982 · 1985 · vertical timeline</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — French Tour Champions: A 40-Year Drought</span>
+        <span class="ph-sub">Hinault 1985 to present · annotated timeline</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 7: GREG LEMOND ────────────────────── -->
+  <section id="winner-7" class="winner-section era-4">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era IV · The Precision Era</span>
+        <span class="era-years">1986 – 2005</span>
+      </div>
+      <div class="winner-no">No. 07</div>
+      <h2 class="winner-name">Greg LeMond <span class="winner-year">· 1986</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — LeMond</span></div>
+        <p class="winner-bio">Greg LeMond was the first American to win the Tour de France and the man who quietly rewrote how the sport thought about technology. He raced with aerodynamic triathlon bars and a streamlined helmet, deployed a heart rate monitor as a pacing tool, and treated cycling as a measurable science at a time when most riders trained by feel.<br><br>His 1989 victory remains the most dramatic finish in Tour history. He entered the final day's time trial trailing Laurent Fignon by fifty seconds. He gained 58 seconds over 24.5 kilometres in Paris — winning by eight seconds, the closest margin ever recorded. LeMond's career was interrupted by a near-fatal hunting accident that left shotgun pellets lodged near his heart. That he won at all after that — let alone three times — remains one of sport's most improbable stories.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">4,094</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Career Tour Wins</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">8s</span>
+          <span class="stat-label">1989 Winning Margin</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">58s</span>
+          <span class="stat-label">Time Gained in Final TT</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — 1989 Final Time Trial: Second-by-Second</span>
+        <span class="ph-sub">LeMond vs. Fignon over 24.5 km · animated race line</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The Aerodynamics Revolution</span>
+        <span class="ph-sub">Equipment evolution 1980 – 1992 · illustrated comparison</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 8: MIGUEL INDURAIN ───────────────── -->
+  <section id="winner-8" class="winner-section era-4">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era IV · The Precision Era</span>
+        <span class="era-years">1986 – 2005</span>
+      </div>
+      <div class="winner-no">No. 08</div>
+      <h2 class="winner-name">Miguel Indurain <span class="winner-year">· 1991</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Indurain</span></div>
+        <p class="winner-bio"><em>Big Mig.</em> The gentle giant from Navarra won five consecutive Tours from 1991 to 1995 — a record that stood until Armstrong — with a style that appeared almost passionless to watch and was utterly devastating in practice. He never attacked in the mountains. He simply refused to crack, sitting within the lead group with a resting heart rate reportedly as low as 28 bpm, and then obliterating every rival in the time trials.<br><br>His VO₂ max was measured at 88 ml/kg/min, among the highest ever recorded in any athlete in any sport. Indurain's five consecutive victories were won with the quiet, mechanical efficiency of a precision instrument — a profound contrast to every champion who came before, and most who have followed since.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">3,914</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">5</span>
+          <span class="stat-label">Consecutive Wins</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">28</span>
+          <span class="stat-label">Resting HR (bpm)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">88</span>
+          <span class="stat-label">VO₂ Max (ml/kg/min)</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Five Tours: Time Trial vs. Mountain Stage Contribution</span>
+        <span class="ph-sub">1991 – 1995 · stacked area by stage type</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — Indurain Physiological Profile</span>
+        <span class="ph-sub">VO₂ max · cardiac output · power vs. typical professional</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 9: LANCE ARMSTRONG ───────────────── -->
+  <section id="winner-9" class="winner-section era-5">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era V · The Modern Era</span>
+        <span class="era-years">2006 – Present</span>
+      </div>
+      <div class="winner-no">No. 09</div>
+      <h2 class="winner-name">Lance Armstrong <span class="winner-year">· 1999</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Armstrong</span></div>
+        <p class="winner-bio">Seven consecutive Tour victories. A comeback from testicular cancer that spread to his brain and lungs. Livestrong wristbands worn by 80 million people across the world. And then, in August 2012, a USADA investigation concluded the most sophisticated doping programme in the history of professional sport — stripping Armstrong of all seven titles and issuing a lifetime ban.<br><br>The Armstrong story is the Tour's most complex and contested: a man whose survival was genuine, whose willpower was extraordinary, and whose victories were built on systematic fraud. The seven-year span he dominated — 1999 to 2005 — remains officially without a winner. His 2013 television confession to Oprah Winfrey, laconic and calculated, resolved nothing. The debate about his era, and about what sport owes its myths, continues.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">7</span>
+          <span class="stat-label">Tour Wins (Stripped)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">1999</span>
+          <span class="stat-label">First Victory Year</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">2012</span>
+          <span class="stat-label">Year of Disqualification</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">80M</span>
+          <span class="stat-label">Livestrong Bands Sold</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — The Rise and Fall: Wins, Scandal &amp; USADA Timeline</span>
+        <span class="ph-sub">1996 – 2013 · annotated event timeline</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The Programme</span>
+        <span class="ph-sub">Substances · methods · personnel · network diagram</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WINNER 10: TADEJ POGAČAR ─────────────────── -->
+  <section id="winner-10" class="winner-section era-5">
+    <div class="section-inner">
+      <div class="era-header">
+        <span class="era-tag">Era V · The Modern Era</span>
+        <span class="era-years">2006 – Present</span>
+      </div>
+      <div class="winner-no">No. 10</div>
+      <h2 class="winner-name">Tadej Pogačar <span class="winner-year">· 2020</span></h2>
+      <div class="winner-intro">
+        <div class="portrait-placeholder"><span>Portrait — Pogačar</span></div>
+        <p class="winner-bio">The Slovenian prodigy arrived at the 2020 Tour as a 21-year-old with a GoPro mounted to his helmet, grinning on every climb. He left as the youngest champion since Henri Cornet in 1904. His penultimate-day time trial — overturning a 57-second deficit to his compatriot Primož Roglič in under 36 kilometres — was among the most extraordinary individual performances in the race's history.<br><br>Pogačar's style is reminiscent of Merckx in its total aggression: he attacks in the mountains, wins the time trials, contests the sprints, and occasionally wins stages that no GC rider has any business contesting. In an era defined by data, watts per kilogram, and cold calculation, he races with a joy that seems almost irrational — and which has revived something essential about what the race is supposed to be.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-value">3,484</span>
+          <span class="stat-label">Total Distance (km)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">21</span>
+          <span class="stat-label">Age at First Win</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">59s</span>
+          <span class="stat-label">Deficit Erased in Final TT</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Jerseys Won in 2024</span>
+        </div>
+      </div>
+      <div class="chart-placeholder">
+        <span class="ph-label">Chart — Power Output vs. Field Average: Key Climbs</span>
+        <span class="ph-sub">2020 – 2024 · watts/kg · scatter with regression</span>
+      </div>
+      <div class="image-strip">
+        <div class="img-placeholder"><span>Photo 1</span></div>
+        <div class="img-placeholder"><span>Photo 2</span></div>
+        <div class="img-placeholder"><span>Photo 3</span></div>
+      </div>
+      <div class="qualitative-placeholder">
+        <span class="ph-label">Qualitative Graphic — The Data-Driven Athlete</span>
+        <span class="ph-sub">Power meter · GPS · biometric tracking in modern racing</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────── -->
+  <footer>
+    <p>Le Tour in 10 · Information Design · 2026</p>
+    <p>Layouts are placeholder — content to be finalized</p>
+  </footer>
+
+  <script>
+    const sections = document.querySelectorAll('.winner-section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(a => a.classList.remove('active'));
+          const active = document.querySelector(`.nav-links a[href="#${id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>

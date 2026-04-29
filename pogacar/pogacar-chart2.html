@@ -1,0 +1,203 @@
+
+<h2 class="sr-only">Box-and-whisker plot of finishing ranks by team in the 2025 Tour de France, with UAE (Pogačar) and Visma (Vingegaard) highlighted.</h2>
+
+<div style="display: flex; gap: 20px; margin-bottom: 12px; font-size: 12px; color: var(--color-text-secondary); flex-wrap: wrap;">
+  <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #7F77DD;"></span>UAE — Pogačar</span>
+  <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #1D9E75;"></span>Visma — Vingegaard</span>
+  <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #B4B2A9;"></span>All other teams</span>
+</div>
+
+<div style="position: relative; width: 100%; height: 820px;">
+  <canvas id="boxChart" role="img" aria-label="Horizontal box and whisker plot of finishing ranks for each team in the 2025 Tour de France. UAE (Pogačar's team) and Visma (Vingegaard's team) are highlighted in purple and teal respectively.">Ranks range from 1 to 160. Lower is better.</canvas>
+</div>
+
+<p style="font-size: 12px; color: var(--color-text-secondary); margin: 8px 0 0; text-align: right;">Lower rank = better finishing position</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.4.4/build/index.umd.min.js"></script>
+<script>
+const raw = [
+  {team:'UAE TEAM EMIRATES XRG', rank:1},{team:'TEAM VISMA | LEASE A BIKE', rank:2},{team:'RED BULL - BORA - HANSGROHE', rank:3},
+  {team:'TEAM PICNIC POSTNL', rank:4},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:5},{team:'UNO-X MOBILITY', rank:6},
+  {team:'ARKEA-B&B HOTELS', rank:7},{team:'RED BULL - BORA - HANSGROHE', rank:8},{team:'EF EDUCATION - EASYPOST', rank:9},
+  {team:'TOTALENERGIES', rank:10},{team:'TEAM JAYCO ALULA', rank:11},{team:'INEOS GRENADIERS', rank:12},
+  {team:'UAE TEAM EMIRATES XRG', rank:13},{team:'XDS ASTANA TEAM', rank:14},{team:'TEAM VISMA | LEASE A BIKE', rank:15},
+  {team:'GROUPAMA-FDJ', rank:16},{team:'TEAM VISMA | LEASE A BIKE', rank:17},{team:'MOVISTAR TEAM', rank:18},
+  {team:'TEAM VISMA | LEASE A BIKE', rank:19},{team:'ARKEA-B&B HOTELS', rank:20},{team:'GROUPAMA-FDJ', rank:21},
+  {team:'ALPECIN-DECEUNINCK', rank:22},{team:'TEAM PICNIC POSTNL', rank:23},{team:'UAE TEAM EMIRATES XRG', rank:24},
+  {team:'DECATHLON AG2R LA MONDIALE TEAM', rank:25},{team:'ARKEA-B&B HOTELS', rank:26},{team:'RED BULL - BORA - HANSGROHE', rank:27},
+  {team:'TEAM VISMA | LEASE A BIKE', rank:28},{team:'UAE TEAM EMIRATES XRG', rank:29},{team:'COFIDIS', rank:30},
+  {team:'MOVISTAR TEAM', rank:31},{team:'SOUDAL QUICK-STEP', rank:32},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:33},
+  {team:'GROUPAMA-FDJ', rank:34},{team:'EF EDUCATION - EASYPOST', rank:35},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:36},
+  {team:'UAE TEAM EMIRATES XRG', rank:37},{team:'XDS ASTANA TEAM', rank:38},{team:'TEAM PICNIC POSTNL', rank:39},
+  {team:'BAHRAIN VICTORIOUS', rank:40},{team:'SOUDAL QUICK-STEP', rank:41},{team:'TUDOR PRO CYCLING TEAM', rank:42},
+  {team:'ARKEA-B&B HOTELS', rank:43},{team:'XDS ASTANA TEAM', rank:44},{team:'GROUPAMA-FDJ', rank:45},
+  {team:'EF EDUCATION - EASYPOST', rank:46},{team:'EF EDUCATION - EASYPOST', rank:47},{team:'ISRAEL - PREMIER TECH', rank:48},
+  {team:'SOUDAL QUICK-STEP', rank:49},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:50},{team:'ARKEA-B&B HOTELS', rank:51},
+  {team:'ISRAEL - PREMIER TECH', rank:52},{team:'INEOS GRENADIERS', rank:53},{team:'TEAM VISMA | LEASE A BIKE', rank:54},
+  {team:'TOTALENERGIES', rank:55},{team:'TUDOR PRO CYCLING TEAM', rank:56},{team:'UNO-X MOBILITY', rank:57},
+  {team:'INEOS GRENADIERS', rank:58},{team:'LIDL-TREK', rank:59},{team:'TOTALENERGIES', rank:60},
+  {team:'ARKEA-B&B HOTELS', rank:61},{team:'LIDL-TREK', rank:62},{team:'TOTALENERGIES', rank:63},
+  {team:'UNO-X MOBILITY', rank:64},{team:'ALPECIN-DECEUNINCK', rank:65},{team:'LOTTO', rank:66},
+  {team:'TEAM VISMA | LEASE A BIKE', rank:67},{team:'SOUDAL QUICK-STEP', rank:68},{team:'COFIDIS', rank:69},
+  {team:'INEOS GRENADIERS', rank:70},{team:'UNO-X MOBILITY', rank:71},{team:'EF EDUCATION - EASYPOST', rank:72},
+  {team:'DECATHLON AG2R LA MONDIALE TEAM', rank:73},{team:'MOVISTAR TEAM', rank:74},{team:'UAE TEAM EMIRATES XRG', rank:75},
+  {team:'UNO-X MOBILITY', rank:76},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:77},{team:'TUDOR PRO CYCLING TEAM', rank:78},
+  {team:'BAHRAIN VICTORIOUS', rank:79},{team:'XDS ASTANA TEAM', rank:80},{team:'COFIDIS', rank:81},
+  {team:'INTERMARCHÉ - WANTY', rank:82},{team:'TUDOR PRO CYCLING TEAM', rank:83},{team:'LOTTO', rank:84},
+  {team:'XDS ASTANA TEAM', rank:85},{team:'ALPECIN-DECEUNINCK', rank:86},{team:'UAE TEAM EMIRATES XRG', rank:87},
+  {team:'ISRAEL - PREMIER TECH', rank:88},{team:'RED BULL - BORA - HANSGROHE', rank:89},{team:'COFIDIS', rank:90},
+  {team:'EF EDUCATION - EASYPOST', rank:91},{team:'ISRAEL - PREMIER TECH', rank:92},{team:'GROUPAMA-FDJ', rank:93},
+  {team:'COFIDIS', rank:94},{team:'LIDL-TREK', rank:95},{team:'TEAM PICNIC POSTNL', rank:96},
+  {team:'TUDOR PRO CYCLING TEAM', rank:97},{team:'RED BULL - BORA - HANSGROHE', rank:98},{team:'TUDOR PRO CYCLING TEAM', rank:99},
+  {team:'ISRAEL - PREMIER TECH', rank:100},{team:'TEAM JAYCO ALULA', rank:101},{team:'MOVISTAR TEAM', rank:102},
+  {team:'ALPECIN-DECEUNINCK', rank:103},{team:'BAHRAIN VICTORIOUS', rank:104},{team:'RED BULL - BORA - HANSGROHE', rank:105},
+  {team:'TOTALENERGIES', rank:106},{team:'MOVISTAR TEAM', rank:107},{team:'ISRAEL - PREMIER TECH', rank:108},
+  {team:'INEOS GRENADIERS', rank:109},{team:'MOVISTAR TEAM', rank:110},{team:'GROUPAMA-FDJ', rank:111},
+  {team:'TEAM PICNIC POSTNL', rank:112},{team:'RED BULL - BORA - HANSGROHE', rank:113},{team:'INTERMARCHÉ - WANTY', rank:114},
+  {team:'INEOS GRENADIERS', rank:115},{team:'LIDL-TREK', rank:116},{team:'MOVISTAR TEAM', rank:117},
+  {team:'TEAM VISMA | LEASE A BIKE', rank:118},{team:'TUDOR PRO CYCLING TEAM', rank:119},{team:'TEAM PICNIC POSTNL', rank:120},
+  {team:'TEAM JAYCO ALULA', rank:121},{team:'LOTTO', rank:122},{team:'BAHRAIN VICTORIOUS', rank:123},
+  {team:'TOTALENERGIES', rank:124},{team:'ISRAEL - PREMIER TECH', rank:125},{team:'BAHRAIN VICTORIOUS', rank:126},
+  {team:'GROUPAMA-FDJ', rank:127},{team:'INTERMARCHÉ - WANTY', rank:128},{team:'LOTTO', rank:129},
+  {team:'UNO-X MOBILITY', rank:130},{team:'DECATHLON AG2R LA MONDIALE TEAM', rank:131},{team:'INTERMARCHÉ - WANTY', rank:132},
+  {team:'TEAM PICNIC POSTNL', rank:133},{team:'TEAM PICNIC POSTNL', rank:134},{team:'XDS ASTANA TEAM', rank:135},
+  {team:'ARKEA-B&B HOTELS', rank:136},{team:'TEAM JAYCO ALULA', rank:137},{team:'INTERMARCHÉ - WANTY', rank:138},
+  {team:'UNO-X MOBILITY', rank:139},{team:'TEAM JAYCO ALULA', rank:140},{team:'INTERMARCHÉ - WANTY', rank:141},
+  {team:'LOTTO', rank:142},{team:'INTERMARCHÉ - WANTY', rank:143},{team:'LOTTO', rank:144},
+  {team:'COFIDIS', rank:145},{team:'LIDL-TREK', rank:146},{team:'SOUDAL QUICK-STEP', rank:147},
+  {team:'SOUDAL QUICK-STEP', rank:148},{team:'ISRAEL - PREMIER TECH', rank:149},{team:'TEAM JAYCO ALULA', rank:150},
+  {team:'BAHRAIN VICTORIOUS', rank:151},{team:'TEAM JAYCO ALULA', rank:152},{team:'ARKEA-B&B HOTELS', rank:153},
+  {team:'COFIDIS', rank:154},{team:'BAHRAIN VICTORIOUS', rank:155},{team:'INTERMARCHÉ - WANTY', rank:156},
+  {team:'TUDOR PRO CYCLING TEAM', rank:157},{team:'RED BULL - BORA - HANSGROHE', rank:158},{team:'LIDL-TREK', rank:159},
+  {team:'LIDL-TREK', rank:160}
+];
+
+const teamShort = {
+  'UAE TEAM EMIRATES XRG': 'UAE',
+  'TEAM VISMA | LEASE A BIKE': 'Visma',
+  'RED BULL - BORA - HANSGROHE': 'Bora',
+  'TEAM PICNIC POSTNL': 'PostNL',
+  'DECATHLON AG2R LA MONDIALE TEAM': 'AG2R',
+  'UNO-X MOBILITY': 'Uno-X',
+  'ARKEA-B&B HOTELS': 'Arkéa',
+  'EF EDUCATION - EASYPOST': 'EF',
+  'TOTALENERGIES': 'TotalEn.',
+  'TEAM JAYCO ALULA': 'Jayco',
+  'INEOS GRENADIERS': 'Ineos',
+  'XDS ASTANA TEAM': 'Astana',
+  'GROUPAMA-FDJ': 'FDJ',
+  'ALPECIN-DECEUNINCK': 'Alpecin',
+  'SOUDAL QUICK-STEP': 'Soudal',
+  'COFIDIS': 'Cofidis',
+  'MOVISTAR TEAM': 'Movistar',
+  'BAHRAIN VICTORIOUS': 'Bahrain',
+  'TUDOR PRO CYCLING TEAM': 'Tudor',
+  'ISRAEL - PREMIER TECH': 'IPT',
+  'LIDL-TREK': 'Trek',
+  'LOTTO': 'Lotto',
+  'INTERMARCHÉ - WANTY': 'Intermarch.',
+};
+
+const POGACAR_TEAM = 'UAE TEAM EMIRATES XRG';
+const VING_TEAM = 'TEAM VISMA | LEASE A BIKE';
+
+const byTeam = {};
+raw.forEach(r => {
+  if (!byTeam[r.team]) byTeam[r.team] = [];
+  byTeam[r.team].push(r.rank);
+});
+
+function quartiles(arr) {
+  const s = [...arr].sort((a,b) => a-b);
+  const q = p => {
+    const pos = (s.length - 1) * p;
+    const lo = Math.floor(pos), hi = Math.ceil(pos), frac = pos - lo;
+    return s[lo] + (s[hi] - s[lo]) * frac;
+  };
+  return { min: s[0], q1: q(0.25), median: q(0.5), q3: q(0.75), max: s[s.length-1] };
+}
+
+const stats = Object.entries(byTeam).map(([team, vals]) => ({
+  team, short: teamShort[team] || team, ...quartiles(vals)
+}));
+stats.sort((a,b) => a.median - b.median);
+
+const labels = stats.map(s => s.short);
+const data = stats.map(s => ({ min: s.min, q1: s.q1, median: s.median, q3: s.q3, max: s.max }));
+
+const PURPLE = '#7F77DD';
+const TEAL   = '#1D9E75';
+const GRAY   = '#B4B2A9';
+
+const borderColors = stats.map(s =>
+  s.team === POGACAR_TEAM ? PURPLE : s.team === VING_TEAM ? TEAL : GRAY
+);
+const bgColors = stats.map(s =>
+  s.team === POGACAR_TEAM ? 'rgba(127,119,221,0.2)' : s.team === VING_TEAM ? 'rgba(29,158,117,0.2)' : 'rgba(180,178,169,0.12)'
+);
+const borderWidths = stats.map(s =>
+  (s.team === POGACAR_TEAM || s.team === VING_TEAM) ? 2.5 : 1
+);
+
+new Chart(document.getElementById('boxChart'), {
+  type: 'boxplot',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Finishing rank',
+      data,
+      backgroundColor: bgColors,
+      borderColor: borderColors,
+      borderWidth: borderWidths,
+      medianColor: borderColors,
+      whiskerColor: borderColors,
+      outlierRadius: 3,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const d = ctx.raw;
+            return [
+              `Best: ${Math.round(d.min)}`,
+              `Q1: ${Math.round(d.q1)}`,
+              `Median: ${Math.round(d.median)}`,
+              `Q3: ${Math.round(d.q3)}`,
+              `Worst: ${Math.round(d.max)}`,
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Finishing rank (lower = better)', font: { size: 12 }, color: '#888780' },
+        ticks: { font: { size: 11 }, color: '#888780', callback: v => Math.round(v) },
+        grid: { color: 'rgba(136,135,128,0.12)' },
+        min: 0, max: 165
+      },
+      y: {
+        ticks: {
+          font: ctx => {
+            const label = labels[ctx.index];
+            const team = stats[ctx.index]?.team;
+            return { size: 11, weight: (team === POGACAR_TEAM || team === VING_TEAM) ? 500 : 400 };
+          },
+          color: ctx => {
+            const team = stats[ctx.index]?.team;
+            return team === POGACAR_TEAM ? PURPLE : team === VING_TEAM ? TEAL : '#888780';
+          }
+        },
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>

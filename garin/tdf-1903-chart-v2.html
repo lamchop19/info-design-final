@@ -1,0 +1,144 @@
+<!-- 1903 Tour de France — Race Time Strips -->
+<!-- No dependencies required -->
+
+<div style="max-width: 100%; padding: 2rem 0;">
+
+  <!-- Title block -->
+  <p style="font-size: 11px; color: #888780; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 4px;">1903 Tour de France</p>
+  <h2 style="font-size: 22px; font-weight: 500; margin: 0 0 4px;">How dominant was Maurice Garin?</h2>
+  <p style="font-size: 14px; color: #888780; margin: 0 0 24px;">Each bar represents total finishing time over 2,428 km. The last finisher took nearly double the winner's time.</p>
+
+  <!-- Legend -->
+  <div style="display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; color: #888780; flex-wrap: wrap;">
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:#C9A84C;display:inline-block;"></span>1st place</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:#A8A8A8;display:inline-block;"></span>2nd place</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:#A0674A;display:inline-block;"></span>3rd place</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:2px;background:#B5D4F4;display:inline-block;"></span>Other finishers</span>
+  </div>
+
+  <!-- Strips -->
+  <div id="tdf-strips" style="display: flex; flex-direction: column; gap: 5px;"></div>
+
+</div>
+
+<script>
+(function () {
+  const data = [
+    { name: "Maurice Garin",         t: 340394 },
+    { name: "Lucien Pothier",        t: 351155 },
+    { name: "Fernand Augereau",      t: 356558 },
+    { name: "Rodolphe Muller",       t: 357164 },
+    { name: "Jean-Baptiste Fischer", t: 358918 },
+    { name: "Marcel Kerff",          t: 365858 },
+    { name: "Julien Lootens",        t: 374782 },
+    { name: "Georges Pasquier",      t: 381558 },
+    { name: "François Beaugendre",   t: 383248 },
+    { name: "Alois Catteau",         t: 390011 },
+    { name: "Jean Dargassies",       t: 393905 },
+    { name: "Ferdinand Payan",       t: 395067 },
+    { name: "Julien Girbe",          t: 409937 },
+    { name: "Isidore Le Chartier",   t: 412838 },
+    { name: "Josef Fischer",         t: 416991 },
+    { name: "Alexandre Foureaux",    t: 440777 },
+    { name: "René Salais",           t: 443408 },
+    { name: "Emile Moulin",          t: 505000 },
+    { name: "Georges Borot",         t: 511874 },
+    { name: "Pierre Desvages",       t: 552450 },
+    { name: "Arsène Millocheau",     t: 559844 }
+  ];
+
+  const podiumColors = ['#C9A84C', '#A8A8A8', '#A0674A'];
+  const podiumText   = ['#7a5a00', '#555',    '#7a3a1a'];
+  const defaultBar   = '#B5D4F4';
+  const defaultText  = '#444441';
+  const mutedText    = '#888780';
+
+  const winner = data[0].t;
+  const max    = data[data.length - 1].t;
+
+  const container = document.getElementById('tdf-strips');
+
+  // ─── FONT CONFIG ───────────────────────────────────────────
+  // Change this to match your page's typeface.
+  // Any font already loaded on your page works here.
+  const FONT_FAMILY = 'inherit'; // ← swap to your font e.g. 'Playfair Display, serif'
+  // ───────────────────────────────────────────────────────────
+
+  data.forEach(function (rider, i) {
+    const isPodium  = i < 3;
+    const barColor  = isPodium ? podiumColors[i] : defaultBar;
+    const nameColor = isPodium ? podiumText[i]   : defaultText;
+
+    const gapSecs = rider.t - winner;
+    const gapH    = Math.floor(gapSecs / 3600);
+    const gapM    = Math.round((gapSecs % 3600) / 60);
+    const gapStr  = i === 0 ? 'Winner' : '+' + gapH + 'h ' + gapM + 'm';
+
+    // Row wrapper
+    const row = document.createElement('div');
+    row.style.cssText = [
+      'display: flex',
+      'align-items: center',
+      'gap: 10px',
+      'font-family: ' + FONT_FAMILY
+    ].join(';');
+
+    // Rank + name label
+    const label = document.createElement('div');
+    label.style.cssText = [
+      'width: 200px',
+      'font-size: 11px',
+      'color: ' + nameColor,
+      'text-align: right',
+      'white-space: nowrap',
+      'overflow: hidden',
+      'text-overflow: ellipsis',
+      'flex-shrink: 0',
+      'font-weight: ' + (isPodium ? '500' : '400')
+    ].join(';');
+    label.title       = rider.name;
+    label.textContent = (i + 1) + '. ' + rider.name;
+
+    // Track (full-width fluid)
+    const track = document.createElement('div');
+    track.style.cssText = [
+      'flex: 1',
+      'position: relative',
+      'height: 22px',
+      'background: rgba(0,0,0,0.04)',
+      'border-radius: 3px',
+      'overflow: hidden'
+    ].join(';');
+
+    // Filled bar, width as percentage of slowest finisher
+    const bar = document.createElement('div');
+    const pct = (rider.t / max * 100).toFixed(2);
+    bar.style.cssText = [
+      'position: absolute',
+      'left: 0',
+      'top: 0',
+      'height: 100%',
+      'width: ' + pct + '%',
+      'background: ' + barColor,
+      'border-radius: 3px'
+    ].join(';');
+
+    // Gap label
+    const gap = document.createElement('div');
+    gap.style.cssText = [
+      'width: 90px',
+      'flex-shrink: 0',
+      'font-size: 11px',
+      'color: ' + mutedText,
+      'font-family: ' + FONT_FAMILY
+    ].join(';');
+    gap.textContent = gapStr;
+
+    track.appendChild(bar);
+    row.appendChild(label);
+    row.appendChild(track);
+    row.appendChild(gap);
+    container.appendChild(row);
+  });
+})();
+</script>

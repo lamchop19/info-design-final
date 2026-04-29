@@ -1,0 +1,162 @@
+
+<h2 class="sr-only">1999 Tour de France top 20 — toggle between official results and a hypothetical clean ranking, with doped riders struck through in place</h2>
+
+<style>
+.toggle-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.toggle-track {
+  width: 52px; height: 28px; border-radius: 14px;
+  background: #E24B4A; border: none; cursor: pointer;
+  position: relative; transition: background 0.3s; flex-shrink: 0;
+}
+.toggle-track.on { background: #1D9E75; }
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; transition: transform 0.3s; pointer-events: none;
+}
+.toggle-track.on .toggle-thumb { transform: translateX(24px); }
+.toggle-label { font-size: 13px; color: var(--color-text-secondary); }
+.toggle-label strong { color: var(--color-text-primary); font-weight: 500; }
+.mode-pill {
+  font-size: 11px; font-weight: 500; padding: 3px 10px;
+  border-radius: 20px; letter-spacing: 0.03em; text-transform: uppercase;
+}
+.mode-pill.official { background: #FCEBEB; color: #A32D2D; }
+.mode-pill.clean    { background: #E1F5EE; color: #0F6E56; }
+
+.legend { display: flex; gap: 14px; margin-bottom: 1.1rem; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-secondary); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+.row {
+  display: flex; align-items: center; gap: 7px;
+  height: 28px; margin-bottom: 5px;
+  transition: opacity 0.4s;
+}
+.row.dimmed { opacity: 0.3; }
+.rk  { font-size: 11px; color: var(--color-text-tertiary); width: 16px; text-align: right; flex-shrink: 0; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.nm  { font-size: 12px; width: 170px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s; }
+.nm.struck { text-decoration: line-through; color: var(--color-text-tertiary); }
+.bar-wrap { flex: 1; height: 18px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+.bar { height: 100%; border-radius: 3px; transition: width 0.55s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+.tm  { font-size: 11px; color: var(--color-text-tertiary); width: 48px; text-align: right; flex-shrink: 0; }
+.clean-rank { font-size: 11px; font-weight: 500; color: #0F6E56; width: 16px; text-align: right; flex-shrink: 0; display: none; }
+
+.note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1rem; line-height: 1.5; }
+</style>
+
+<div style="padding:0.25rem 0 0;">
+
+<div class="toggle-wrap">
+  <button class="toggle-track" id="tog" onclick="flip()" aria-pressed="false" aria-label="Toggle between official and clean ranking">
+    <div class="toggle-thumb"></div>
+  </button>
+  <div class="toggle-label" id="lbl">Showing <strong>official top 20</strong></div>
+  <span class="mode-pill official" id="pill">Official</span>
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#E24B4A;"></div>Sanctioned</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#EF9F27;"></div>Flagged / implicated</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#1D9E75;"></div>No case found</div>
+</div>
+
+<div id="chart"></div>
+
+<div class="note">Armstrong's 1999 title was vacated in 2012; no official replacement winner was named. "Flagged" = implicated but no formal sanction on record. Sources: cyclisme-dopage.com, USADA Reasoned Decision (2012).</div>
+</div>
+
+<script>
+const riders = [
+  { name:"Armstrong Lance",    gap:0,    status:"sanctioned" },
+  { name:"Zülle Alex",         gap:457,  status:"sanctioned" },
+  { name:"Escartín Fernando",  gap:626,  status:"clean"      },
+  { name:"Dufaux Laurent",     gap:883,  status:"sanctioned" },
+  { name:"Casero Ángel Luis",  gap:911,  status:"flagged"    },
+  { name:"Olano Abraham",      gap:1007, status:"sanctioned" },
+  { name:"Nardello Daniele",   gap:1022, status:"flagged"    },
+  { name:"Virenque Richard",   gap:1048, status:"sanctioned" },
+  { name:"Belli Wladimir",     gap:1057, status:"clean"      },
+  { name:"Peron Andrea",       gap:1390, status:"flagged"    },
+  { name:"Van de Wouwer Kurt", gap:1412, status:"clean"      },
+  { name:"Etxebarria David",   gap:1601, status:"sanctioned" },
+  { name:"Hamilton Tyler",     gap:1613, status:"sanctioned" },
+  { name:"Heulot Stéphane",   gap:1678, status:"clean"      },
+  { name:"Meier Roland",       gap:1724, status:"flagged"    },
+  { name:"Salmon Benoît",     gap:1739, status:"clean"      },
+  { name:"Elli Alberto",       gap:2019, status:"clean"      },
+  { name:"Lanfranchi Paolo",   gap:2054, status:"clean"      },
+  { name:"Contreras C.A.",     gap:2093, status:"clean"      },
+  { name:"Totschnig Georg",    gap:2230, status:"clean"      },
+];
+
+const dotColor  = { sanctioned:"#E24B4A", flagged:"#EF9F27", clean:"#1D9E75" };
+const barActive = { sanctioned:"#E24B4A", flagged:"#EF9F27", clean:"#1D9E75" };
+const barDimmed = "#B4B2A9";
+const MAX = 2400;
+
+function pct(gap) { return gap === 0 ? 6 : Math.min(96, 6 + (gap/MAX)*90); }
+function fmt(s)   { if(s===0) return "91:32:16"; return "+"+Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+
+let cleanRank = 0;
+const rows = riders.map((r, i) => {
+  const tainted = r.status !== "clean";
+  if (!tainted) cleanRank++;
+  return { ...r, origRank: i+1, cleanRank: tainted ? null : cleanRank };
+});
+
+const chart = document.getElementById("chart");
+chart.innerHTML = rows.map(r => `
+  <div class="row" id="row${r.origRank}">
+    <span class="rk" id="rk${r.origRank}">${r.origRank}</span>
+    <div class="dot" style="background:${dotColor[r.status]};"></div>
+    <span class="nm" id="nm${r.origRank}">${r.name}</span>
+    <div class="bar-wrap">
+      <div class="bar" id="bar${r.origRank}" style="width:${pct(r.gap)}%;background:${barActive[r.status]};"></div>
+    </div>
+    <span class="tm">${fmt(r.gap)}</span>
+  </div>`).join("");
+
+let isClean = false;
+
+function flip() {
+  isClean = !isClean;
+  const tog = document.getElementById("tog");
+  tog.classList.toggle("on", isClean);
+  tog.setAttribute("aria-pressed", String(isClean));
+  document.getElementById("lbl").innerHTML = isClean
+    ? 'Showing <strong>hypothetical clean ranking</strong>'
+    : 'Showing <strong>official top 20</strong>';
+  const pill = document.getElementById("pill");
+  pill.className = isClean ? "mode-pill clean" : "mode-pill official";
+  pill.textContent = isClean ? "Clean" : "Official";
+
+  rows.forEach(r => {
+    const tainted = r.status !== "clean";
+    const row  = document.getElementById("row"  + r.origRank);
+    const nm   = document.getElementById("nm"   + r.origRank);
+    const bar  = document.getElementById("bar"  + r.origRank);
+    const rk   = document.getElementById("rk"   + r.origRank);
+
+    if (isClean) {
+      if (tainted) {
+        row.classList.add("dimmed");
+        nm.classList.add("struck");
+        bar.style.width = "2%";
+        bar.style.background = barDimmed;
+        rk.textContent = "—";
+      } else {
+        rk.textContent = r.cleanRank;
+        bar.style.background = "#1D9E75";
+      }
+    } else {
+      row.classList.remove("dimmed");
+      nm.classList.remove("struck");
+      bar.style.width = pct(r.gap) + "%";
+      bar.style.background = barActive[r.status];
+      rk.textContent = r.origRank;
+    }
+  });
+}
+</script>

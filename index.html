@@ -465,6 +465,44 @@
       }
 
       /* ── FOOTER ────────────────────────────────────── */
+      #sources .sources-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+      }
+      #sources .sources-category-title {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #aaa;
+        margin: 0 0 0.75rem;
+      }
+      #sources .sources-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #sources .sources-list li {
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        color: #888;
+        margin-bottom: 0.45rem;
+        line-height: 1.4;
+      }
+      #sources .sources-list a {
+        color: #555;
+        text-decoration: none;
+      }
+      #sources .sources-list a:hover {
+        color: #111;
+        text-decoration: underline;
+      }
+      @media (max-width: 900px) {
+        #sources .sources-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
       footer {
         border-top: 1px solid #e8e8e8;
         padding: 2.5rem 3rem;
@@ -571,7 +609,7 @@
       .era-4 .disclaimer {
         background: var(--era-accent);
         border-left-color: var(--era-primary);
-        color: var(--section-text-secondary);
+        color: #ffffff;
       }
     </style>
   </head>
@@ -3127,6 +3165,7 @@
             });
           })();
         </script>
+        <p class="chart-title">Do the best riders compete for the best teams? Box-and-whisker plot of finishing ranks by team in the 2025 Tour</p>
         <iframe
           src="pogacar/pogacar-chart2.html"
           style="width: 100%; height: 500px; border: none; display: block;"
@@ -3145,10 +3184,60 @@
       </div>
     </section>
 
+    <!-- ── SOURCES ──────────────────────────────────── -->
+    <section id="sources" style="max-width:1200px;margin:0 auto;padding:2.5rem 3rem 1rem;border-top:1px solid #e8e8e8;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;color:#111;">Sources</h2>
+      <div class="sources-grid">
+
+        <!-- Data & Official -->
+        <div class="sources-category">
+          <h3 class="sources-category-title">Data &amp; Official</h3>
+          <ul class="sources-list">
+            <li><a href="https://www.letour.fr/en/history" target="_blank" rel="noopener">letour.fr</a></li>
+            <li><a href="https://www.procyclingstats.com" target="_blank" rel="noopener">ProCyclingStats</a></li>
+            <li><a href="https://bikeraceinfo.com/tdf/tdfstats.html" target="_blank" rel="noopener">BikeRaceInfo — TdF Statistics</a></li>
+            <li><a href="https://www.bikeraceinfo.com/riderhistories/sponsors-directory.html" target="_blank" rel="noopener">BikeRaceInfo — Sponsors Directory</a></li>
+            <li><a href="https://www.cyclisme-dopage.com/chiffres/tdf1999-en.htm" target="_blank" rel="noopener">Cyclisme-dopage — 1999 TdF Data</a></li>
+            <li>LeTourDataSet — GitHub</li>
+            <li>Kaggle Dataset</li>
+            <li>Maven Analytics Dataset</li>
+          </ul>
+        </div>
+
+        <!-- Books -->
+        <div class="sources-category">
+          <h3 class="sources-category-title">Books</h3>
+          <ul class="sources-list">
+            <li><em>The First Tour de France</em> — Peter Cossins</li>
+            <li><em>The Secret Race</em> — Tyler Hamilton</li>
+            <li><em>The Tour de France: A Physiological Review</em></li>
+          </ul>
+        </div>
+
+        <!-- Journalism & Features -->
+        <div class="sources-category">
+          <h3 class="sources-category-title">Journalism &amp; Features</h3>
+          <ul class="sources-list">
+            <li><a href="https://www.alpecincycling.com/en/pro-peloton/from-body-fat-to-power-output-anatomy-of-a-tour-de-france-rider/" target="_blank" rel="noopener">Alpecin — Anatomy of a TdF Rider</a></li>
+            <li><a href="https://www.bicycling.com/tour-de-france/a27681555/greg-lemond-1989/" target="_blank" rel="noopener">Bicycling — Greg LeMond 1989</a></li>
+            <li><a href="https://www.bicycling.com/health-nutrition/a20040926/timeline-a-history-of-tour-de-france-nutrition/" target="_blank" rel="noopener">Bicycling — History of TdF Nutrition</a></li>
+            <li><a href="https://www.bikeradar.com/features/tour-de-france-winning-bikes-through-the-ages" target="_blank" rel="noopener">BikeRadar — Winning Bikes Through the Ages</a></li>
+            <li><a href="https://www.cyclingrevealed.com/oct05/top25-19.html" target="_blank" rel="noopener">CyclingRevealed — Top 25 TdF Riders</a></li>
+            <li><a href="https://www.espn.com/blog/playbook/dollars/post/_/id/1206/in-numbers-lance-armstrong-foundation" target="_blank" rel="noopener">ESPN — Lance Armstrong Foundation</a></li>
+            <li><a href="https://retro-cycling.com/blogs/history/the-legendry-battle-between-bartali-and-coppi" target="_blank" rel="noopener">Retro Cycling — Bartali and Coppi</a></li>
+            <li><a href="https://www.texasmonthly.com/style/livestrong-wristband-oral-history-twentieth-anniversary/" target="_blank" rel="noopener">Texas Monthly — Livestrong at 20</a></li>
+            <li><a href="https://www.theguardian.com/sport/2018/jul/03/tour-de-france-festina-affair" target="_blank" rel="noopener">The Guardian — The Festina Affair</a></li>
+            <li><a href="https://www.trainingpeaks.com/blog/fueling-tour-de-france-champions-eat-win/" target="_blank" rel="noopener">TrainingPeaks — Fueling TdF Champions</a></li>
+            <li><a href="https://www.welovecycling.com/wide/2023/07/03/the-most-iconic-places-of-the-tour-de-france/" target="_blank" rel="noopener">We Love Cycling — Iconic TdF Places</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ── FOOTER ────────────────────────────────────── -->
     <footer>
       <p>Le Tour in 7 · Information Design · 2026</p>
-      <p>Layouts are placeholder — content to be finalized</p>
     </footer>
 
     <script>
@@ -3172,6 +3261,14 @@
       );
 
       sections.forEach((s) => observer.observe(s));
+    </script>
+
+    <script>
+      document.querySelectorAll("#sources .sources-list").forEach((ul) => {
+        Array.from(ul.querySelectorAll("li"))
+          .sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim()))
+          .forEach((li) => ul.appendChild(li));
+      });
     </script>
   </body>
 </html>
